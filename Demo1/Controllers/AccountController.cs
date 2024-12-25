@@ -1,9 +1,11 @@
 ﻿using Demo1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Demo1.Controllers
@@ -26,6 +28,8 @@ namespace Demo1.Controllers
             this.signInManager = signInManager;
         }
 
+
+        [Authorize(Roles ="admin")]
 
         public IActionResult Index()
         {
@@ -73,7 +77,7 @@ namespace Demo1.Controllers
                 var result = await signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return LocalRedirect(model.ReturnUrl??"/");
+                    return LocalRedirect(model.ReturnUrl??"/");  //open redirection
                 }
 
             }
@@ -106,7 +110,13 @@ namespace Demo1.Controllers
                 IdentityResult result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //email confirme
+                   await userManager.AddToRoleAsync(user, "guest");
+                   await userManager.AddClaimsAsync(user, new Claim[]
+                    {
+                        new Claim(ClaimTypes.Country,"IR","HR"),
+                          new Claim("Dep","IT","HR")
+
+                    });
                 }
                 else
                 {
@@ -196,7 +206,10 @@ namespace Demo1.Controllers
             return View(model);
         }
 
-
+        public IActionResult AccessDenied(string ReturnUrl)
+        {
+            return Content("403!!!");
+        }
     }
 
 

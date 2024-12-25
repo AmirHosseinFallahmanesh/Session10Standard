@@ -24,6 +24,7 @@ namespace Demo1.Controllers
             return View();
         }
 
+        [Authorize(Policy = "OnlyItDep")]
         public IActionResult Privacy()
         {
             return View();

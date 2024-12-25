@@ -35,9 +35,9 @@ namespace Demo1
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDatabaseDeveloperPageExceptionFilter();
+            //services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => {
+            services.AddIdentity<IdentityUser,IdentityRole>(options => {
 
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -47,7 +47,8 @@ namespace Demo1
             
                 options.SignIn.RequireConfirmedAccount = false; 
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -59,6 +60,18 @@ namespace Demo1
 
 
             });
+
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("OnlyItDep", policy =>
+                {
+                    //policy.RequireRole("admin");
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("Dep", "IT");
+                });
+            });
+
+            services.AddRazorPages();
             services.AddControllersWithViews();
         }
 
