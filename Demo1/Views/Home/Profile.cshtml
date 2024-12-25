@@ -4,4 +4,7 @@
 }
 
 <h1>Profile</h1>
-
+@if (User.Identity.IsAuthenticated)
+{
+    <h3>Welcome @User.Identity.Name</h3>
+}

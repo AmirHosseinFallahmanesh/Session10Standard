@@ -43,8 +43,8 @@
                 @Html.DisplayFor(modelItem => item.Password)
             </td>
             <td>
-               
-                a<a class="btn btn-danger" asp-action="delete" asp-route-id="@item.Id">Delete</a>
+                <a class="btn btn-danger" asp-action="edit" asp-route-id="@item.Id">Edit</a>
+                <a class="btn btn-danger" asp-action="delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }
